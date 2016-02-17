@@ -31,6 +31,97 @@ java_import "com.jme3.scene.shape.Box"
 java_import "com.jme3.math.ColorRGBA"
 java_import "com.jme3.scene.Node"
 java_import "com.jme3.system.NanoTimer"
+java_import "com.jme3.scene.shape.Line"
+java_import "com.jme3.light.DirectionalLight"
+
+class TrainWorld
+  attr_reader :trains
+  attr_reader :stations
+  attr_reader :lines
+
+  def initialize
+    @stations = []
+    @stations << Station.new(x: 0, y: 3)
+    @stations << Station.new(x: 9, y: 3)
+
+    @lines = []
+    @lines << TrainLine.new(start: @stations.first, finish: @stations.last)
+
+    @trains = []
+    @trains << Train.new(x: 3, y: 3, line: @lines.first)
+  end
+end
+
+class Pointable
+  attr_reader :x, :y, :z
+
+  def initialize(x:, y:, z: 0)
+    @x = x
+    @y = y
+    @z = z
+  end
+
+  def point
+    Vector3f.new(x, y, z)
+  end
+end
+
+def coloured_material(color, asset_manager)
+  material = Material.new(asset_manager, File.join('Common', 'MatDefs', 'Light', 'Lighting.j3md'))
+  material.set_boolean "UseMaterialColors", true
+  material.set_color "Ambient", color
+  material.set_color "Diffuse", color
+  material
+end
+
+class Lineable
+  attr_reader :start, :finish
+
+  def initialize(start:, finish:)
+    @start = start
+    @finish = finish
+  end
+end
+
+class Station < Pointable
+  def as_geometry(asset_manager)
+    box = Box.new(point, 1, 1, 1)
+
+    geo = Geometry.new("Box", box)
+    geo.material = coloured_material(ColorRGBA::Blue, asset_manager)
+    geo
+  end
+end
+
+class TrainLine < Lineable
+  def as_geometry(asset_manager)
+    line = Line.new(start.point, finish.point)
+    line.set_line_width 2
+
+    geo = Geometry.new("Line", line)
+    material = Material.new(asset_manager, File.join('Common', 'MatDefs', 'Misc', 'Unshaded.j3md'))
+    material.set_color("Color", ColorRGBA::Orange)
+    geo.material = material
+    geo
+  end
+end
+
+class Train < Pointable
+  attr_reader :line
+
+  def initialize(x:, y:, z: 0, line:)
+    super(x: x, y: y, z: z)
+    @line = line
+  end
+
+  def as_geometry(asset_manager)
+    box = Box.new(point, 0.3, 0.3, 0.3)
+
+    geo = Geometry.new("Box", box)
+    geo.material = coloured_material(ColorRGBA::Red, asset_manager)
+    geo
+  end
+end
 
 class Sample1 < SimpleApplication
 
@@ -65,12 +156,39 @@ class Sample1 < SimpleApplication
 
     getViewPort().background_color = ColorRGBA::Green
 
+    @train_root = Node.new("train root")
+    root_node.attach_child @train_root
+
+    sun = DirectionalLight.new
+    sun.set_color ColorRGBA::White
+    sun.set_direction Vector3f.new(-0.5, -0.5, -0.5).normalize_local
+    root_node.add_light sun
+
+    @world = TrainWorld.new
+
+    redrawAll
   end
 
   def simpleUpdate(tpf)
     @pivot.rotate(0, 2 * tpf, 0)
+    redrawAll
   end
 
+  def redrawAll
+    @train_root.detach_all_children
+
+    @world.stations.each do |object|
+      @train_root.attach_child object.as_geometry(asset_manager)
+    end
+
+    @world.lines.each do |object|
+      @train_root.attach_child object.as_geometry(asset_manager)
+    end
+
+    @world.trains.each do |object|
+      @train_root.attach_child object.as_geometry(asset_manager)
+    end
+  end
 end
 
 java_import "com.jme3.system.AppSettings"
