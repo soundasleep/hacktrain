@@ -48,7 +48,7 @@ class TrainWorld
     @lines << TrainLine.new(start: @stations.first, finish: @stations.last)
 
     @trains = []
-    @trains << Train.new(x: 3, y: 3, line: @lines.first)
+    @trains << Train.new(x: 3, y: 3, line: @lines.first, from: @stations.first, to: @stations.last)
   end
 end
 
@@ -85,7 +85,7 @@ end
 
 class Station < Pointable
   def as_geometry(asset_manager)
-    box = Box.new(point, 1, 1, 1)
+    box = Box.new(point, 0.6, 0.1, 0.2)
 
     geo = Geometry.new("Box", box)
     geo.material = coloured_material(ColorRGBA::Blue, asset_manager)
@@ -107,11 +107,13 @@ class TrainLine < Lineable
 end
 
 class Train < Pointable
-  attr_reader :line
+  attr_reader :line, :from, :to
 
-  def initialize(x:, y:, z: 0, line:)
+  def initialize(x:, y:, z: 0, line:, from:, to:)
     super(x: x, y: y, z: z)
     @line = line
+    @from = from
+    @to = to
   end
 
   def as_geometry(asset_manager)
@@ -120,6 +122,27 @@ class Train < Pointable
     geo = Geometry.new("Box", box)
     geo.material = coloured_material(ColorRGBA::Red, asset_manager)
     geo
+  end
+
+  def simpleUpdate(tpf)
+    @x += tpf * dx
+    @y += tpf * dy
+    @z += tpf * dz
+  end
+
+  def dx
+    return 0 if x == to.x
+    x < to.x ? 1 : -1
+  end
+
+  def dy
+    return 0 if y == to.y
+    y < to.y ? 1 : -1
+  end
+
+  def dz
+    return 0 if z == to.z
+    z < to.z ? 1 : -1
   end
 end
 
@@ -171,6 +194,11 @@ class Sample1 < SimpleApplication
 
   def simpleUpdate(tpf)
     @pivot.rotate(0, 2 * tpf, 0)
+
+    @world.trains.each do |object|
+      object.simpleUpdate tpf
+    end
+
     redrawAll
   end
 
