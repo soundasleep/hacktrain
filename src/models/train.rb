@@ -9,10 +9,6 @@ class Train < Pointable
     @name = name
   end
 
-  def as_geometry(asset_manager)
-    Node::Train.new(self, asset_manager).as_geometry
-  end
-
   def simpleUpdate(world, tpf)
     @x += tpf * speed * direction.x
     @y += tpf * speed * direction.y

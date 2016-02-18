@@ -2,6 +2,9 @@ require 'rubygems'
 require 'active_support/all'
 require 'jmonkeyengine'
 
+class Inputs; end
+class Nodes; end
+
 Dir[File.dirname(__FILE__) + '/src/**/*.rb'].each do |file|
   require file
 end

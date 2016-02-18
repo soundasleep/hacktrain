@@ -1,7 +1,13 @@
 class MyGame < SimpleApplication
   field_accessor :cam, :flyCam
 
+  attr_reader :state
+
   def simpleInitApp
+    @state = {
+      debug: false
+    }
+
     # timer = NanoTimer.new #required for patch
 
     box1 = Box.new(Vector3f.new(1,-1,1), 0.1, 0.1, 0.1)
@@ -54,15 +60,24 @@ class MyGame < SimpleApplication
     redraw_all
   end
 
+  attr_reader :keys_registered
+
   def init_keys
+    @keys_registered = []
+
     [
-      Inputs::Camera
+      Inputs::Camera,
+      Inputs::Debug,
     ].each do |input_class|
       input = input_class.new(self)
 
-      input.mappings.each do |title, key|
-        input_manager.add_mapping title, key
+      input.key_mappings.each do |title, key|
+        trigger = KeyTrigger.new(KeyInput.send("KEY_#{key}"))
+
+        input_manager.add_mapping title, trigger
         input_manager.add_listener input, title
+
+        @keys_registered << "#{key}\t#{title}"
       end
     end
   end
@@ -74,7 +89,12 @@ class MyGame < SimpleApplication
       object.simpleUpdate @world, tpf
     end
 
-    redraw_trains
+    if state[:redraw]
+      redraw_all
+      state[:redraw] = false
+    else
+      redraw_trains
+    end
   end
 
   def train_pivot
@@ -89,7 +109,7 @@ class MyGame < SimpleApplication
     @train_root.detach_all_children
 
     @world.stations.each do |object|
-      geo = object.as_geometry(asset_manager)
+      geo = object.as_geometry(asset_manager, state)
       node = Node.new
       node.attach_child geo
       node.set_local_translation object.point
@@ -97,7 +117,7 @@ class MyGame < SimpleApplication
     end
 
     @world.lines.each do |object|
-      @train_root.attach_child object.as_geometry(asset_manager)
+      @train_root.attach_child object.as_geometry(asset_manager, state)
     end
 
     redraw_trains
@@ -107,11 +127,16 @@ class MyGame < SimpleApplication
     train_pivot.detach_all_children
 
     @world.trains.each do |object|
-      geo = object.as_geometry(asset_manager)
+      geo = object.as_geometry(asset_manager, state)
       node = Node.new
       node.attach_child geo
       node.set_local_translation object.point
       train_pivot.attach_child node
     end
+  end
+
+  def display_help!
+    puts "Keys available:"
+    puts @keys_registered
   end
 end

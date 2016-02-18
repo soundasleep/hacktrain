@@ -1,11 +1,6 @@
-class Inputs
-end
-
 class Inputs::Camera
   include com.jme3.input.controls.AnalogListener
   include com.jme3.input.controls.ActionListener
-
-  class InputError < StandardError; end
 
   attr_reader :app
   attr_reader :shift
@@ -14,14 +9,14 @@ class Inputs::Camera
     @app = app
   end
 
-  def mappings
+  def key_mappings
     {
-      "camera left": KeyTrigger.new(KeyInput.KEY_A),
-      "camera right": KeyTrigger.new(KeyInput.KEY_D),
-      "camera up": KeyTrigger.new(KeyInput.KEY_W),
-      "camera down": KeyTrigger.new(KeyInput.KEY_S),
+      "camera left": "A",
+      "camera right": "D",
+      "camera up": "W",
+      "camera down": "S",
 
-      "shift": KeyTrigger.new(KeyInput.KEY_LSHIFT),
+      "shift": "LSHIFT",
     }
   end
 
