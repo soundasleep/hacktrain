@@ -1,16 +1,6 @@
-puts "load path = #{$LOAD_PATH}"
-
 require 'rubygems'
-
-puts "load path = #{$LOAD_PATH}"
-
 require 'active_support/all'
-
-jmonkeyengine_path = File.dirname(`gem which jmonkeyengine`)
-
-Dir[File.join(jmonkeyengine_path, "..", "vendor", "*.jar")].each do |jar|
-  $CLASSPATH << jar
-end
+require 'jmonkeyengine'
 
 Dir[File.dirname(__FILE__) + '/src/**/*.rb'].each do |file|
   require file
