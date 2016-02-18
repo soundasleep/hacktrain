@@ -26,9 +26,9 @@ class TrainWorld
     end
 
     # add some random trains
-    RANDOM_TRAINS.times do
+    RANDOM_TRAINS.times do |n|
       line = @lines.sample
-      @trains << Train.new(x: line.from.x, y: line.from.y, line: line, from: line.from, to: line.to)
+      @trains << Train.new(x: line.from.x, y: line.from.y, line: line, from: line.from, to: line.to, name: "Train #{n + 1}")
     end
   end
 end

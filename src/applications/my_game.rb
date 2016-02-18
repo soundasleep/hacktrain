@@ -89,7 +89,11 @@ class MyGame < SimpleApplication
     @train_root.detach_all_children
 
     @world.stations.each do |object|
-      @train_root.attach_child object.as_geometry(asset_manager)
+      geo = object.as_geometry(asset_manager)
+      node = Node.new
+      node.attach_child geo
+      node.set_local_translation object.point
+      @train_root.attach_child node
     end
 
     @world.lines.each do |object|
@@ -103,7 +107,11 @@ class MyGame < SimpleApplication
     train_pivot.detach_all_children
 
     @world.trains.each do |object|
-      train_pivot.attach_child object.as_geometry(asset_manager)
+      geo = object.as_geometry(asset_manager)
+      node = Node.new
+      node.attach_child geo
+      node.set_local_translation object.point
+      train_pivot.attach_child node
     end
   end
 end

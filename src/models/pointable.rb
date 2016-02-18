@@ -10,4 +10,8 @@ class Pointable
   def point
     Vector3f.new(x, y, z)
   end
+
+  def zero
+    Vector3f.new(0, 0, 0)
+  end
 end
