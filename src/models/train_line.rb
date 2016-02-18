@@ -1,6 +1,6 @@
 class TrainLine < Lineable
   def as_geometry(asset_manager)
-    line = Line.new(start.point, finish.point)
+    line = Line.new(from.point, to.point)
     line.set_line_width 2
 
     geo = Geometry.new("Line", line)

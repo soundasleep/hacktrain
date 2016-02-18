@@ -17,12 +17,13 @@ class Train < Pointable
   end
 
   def simpleUpdate(world, tpf)
-    @x += tpf * dx * speed
-    @y += tpf * dy * speed
-    @z += tpf * dz * speed
+    @x += tpf * speed * direction.x
+    @y += tpf * speed * direction.y
+    @z += tpf * speed * direction.z
 
     if at_destination?
-      @to = world.stations.sample
+      @from = to
+      @to = @from.possible_destinations(world).sample
     end
   end
 
@@ -40,18 +41,7 @@ class Train < Pointable
     3
   end
 
-  def dx
-    return 0 if x == to.x
-    x < to.x ? 1 : -1
-  end
-
-  def dy
-    return 0 if y == to.y
-    y < to.y ? 1 : -1
-  end
-
-  def dz
-    return 0 if z == to.z
-    z < to.z ? 1 : -1
+  def direction
+    to.point.subtract(point).normalize
   end
 end

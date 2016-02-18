@@ -6,4 +6,8 @@ class Station < Pointable
     geo.material = coloured_material(ColorRGBA::Blue, asset_manager)
     geo
   end
+
+  def possible_destinations(world)
+    world.lines.select { |line| line.from == self }.map(&:to)
+  end
 end

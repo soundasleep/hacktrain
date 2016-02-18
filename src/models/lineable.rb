@@ -1,8 +1,8 @@
 class Lineable
-  attr_reader :start, :finish
+  attr_reader :from, :to
 
-  def initialize(start:, finish:)
-    @start = start
-    @finish = finish
+  def initialize(from:, to:)
+    @from = from
+    @to = to
   end
 end

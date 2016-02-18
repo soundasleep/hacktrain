@@ -3,15 +3,32 @@ class TrainWorld
   attr_reader :stations
   attr_reader :lines
 
+  RANDOM_STATIONS = 15
+  RANDOM_TRAINS = 4
+  RANDOM_LINES = (RANDOM_STATIONS * 1.1).to_i
+
   def initialize
     @stations = []
-    @stations << Station.new(x: 0, y: 3)
-    @stations << Station.new(x: 9, y: 3)
-
     @lines = []
-    @lines << TrainLine.new(start: @stations.first, finish: @stations.last)
-
     @trains = []
-    @trains << Train.new(x: 3, y: 3, line: @lines.first, from: @stations.first, to: @stations.last)
+
+    # add some random stations
+    RANDOM_STATIONS.times do
+      @stations << Station.new(x: rand(25) - 12, y: rand(15) - 7)
+    end
+
+    # add some random lines
+    RANDOM_LINES.times do
+      a = @stations.sample
+      b = (@stations - [a]).sample
+      @lines << TrainLine.new(from: a, to: b)
+      @lines << TrainLine.new(from: b, to: a)
+    end
+
+    # add some random trains
+    RANDOM_TRAINS.times do
+      line = @lines.sample
+      @trains << Train.new(x: line.from.x, y: line.from.y, line: line, from: line.from, to: line.to)
+    end
   end
 end

@@ -5,7 +5,7 @@ def start_app
   app_settings.title = "My game"
   app_settings.samples = 4
   # app_settings.fullscreen = true
-  app_settings.set_resolution(800, 600) #old school resolution
+  app_settings.set_resolution(1024, 768)
 
   app = MyGame.new
   app.settings = app_settings

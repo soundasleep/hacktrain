@@ -1,4 +1,5 @@
 class MyGame < SimpleApplication
+  field_accessor :cam, :flyCam
 
   def simpleInitApp
     # timer = NanoTimer.new #required for patch
@@ -45,7 +46,25 @@ class MyGame < SimpleApplication
 
     @world = TrainWorld.new
 
-    redrawAll
+    cam.location = Vector3f.new(0, 0, 20)
+    flyCam.enabled = false
+
+    init_keys
+
+    redraw_all
+  end
+
+  def init_keys
+    [
+      Inputs::Camera
+    ].each do |input_class|
+      input = input_class.new(self)
+
+      input.mappings.each do |title, key|
+        input_manager.add_mapping title, key
+        input_manager.add_listener input, title
+      end
+    end
   end
 
   def simpleUpdate(tpf)
@@ -55,10 +74,18 @@ class MyGame < SimpleApplication
       object.simpleUpdate @world, tpf
     end
 
-    redrawAll
+    redraw_trains
   end
 
-  def redrawAll
+  def train_pivot
+    if @train_pivot.nil?
+      @train_pivot = Node.new("train pivot")
+      root_node.attach_child @train_pivot
+    end
+    @train_pivot
+  end
+
+  def redraw_all
     @train_root.detach_all_children
 
     @world.stations.each do |object|
@@ -69,8 +96,14 @@ class MyGame < SimpleApplication
       @train_root.attach_child object.as_geometry(asset_manager)
     end
 
+    redraw_trains
+  end
+
+  def redraw_trains
+    train_pivot.detach_all_children
+
     @world.trains.each do |object|
-      @train_root.attach_child object.as_geometry(asset_manager)
+      train_pivot.attach_child object.as_geometry(asset_manager)
     end
   end
 end
