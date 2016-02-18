@@ -23,3 +23,5 @@ java_import "com.jme3.input.controls.KeyTrigger"
 java_import "com.jme3.input.controls.MouseAxisTrigger"
 
 java_import "com.jme3.font.BitmapText"
+
+java_import "com.jme3.renderer.queue.RenderQueue"

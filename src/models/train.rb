@@ -20,9 +20,10 @@ class Train < Pointable
 
     text = BitmapText.new(guiFont, false)
     text.size = 0.3
-    text.color = ColorRGBA::Orange
+    text.color = ColorRGBA::White
     text.text = "#{name}"
-    text.set_local_translation -text.getLineWidth() / 2, text.getLineHeight() + 0.3, 0
+    text.set_local_translation -text.getLineWidth() / 2, text.getLineHeight() / 2, 0.35
+    text.queue_bucket = RenderQueue::Bucket::Transparent
 
     node = Node.new("train node #{name}")
     node.attach_child geo
