@@ -1,6 +1,6 @@
 module Geometryable
-  def as_geometry(asset_manager, state)
-    node_class.new(self, asset_manager).as_geometry(state)
+  def as_geometry(asset_manager, state, selected = false)
+    node_class.new(self, asset_manager).as_geometry(state, selected)
   end
 
   def node_class

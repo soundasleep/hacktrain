@@ -140,7 +140,7 @@ class MyGame < SimpleApplication
   end
 
   def wrap_node(object)
-    geo = object.as_geometry(asset_manager, state)
+    geo = object.as_geometry(asset_manager, state, @selected == object)
 
     geo.set_user_data "type", object.class.name
     geo.set_user_data "id", object.id
@@ -186,6 +186,12 @@ class MyGame < SimpleApplication
 
   def build_line!(from, to)
     @world.lines << TrainLine.new(from: from, to: to)
+
+    @state[:redraw] = true
+  end
+
+  def select(object)
+    @selected = object
 
     @state[:redraw] = true
   end

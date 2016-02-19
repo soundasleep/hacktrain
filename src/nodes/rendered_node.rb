@@ -8,9 +8,16 @@ class Node::RenderedNode
     @asset_manager = asset_manager
   end
 
-  def as_geometry(state)
+  def as_geometry(state, selected = false)
     node = Node.new("#{self.class.name} #{name}")
-    node.attach_child root_geometry
+    geo = root_geometry
+
+    # change the colour if selected
+    if selected
+      geo.material = coloured_material(ColorRGBA::Yellow, asset_manager)
+    end
+
+    node.attach_child geo
 
     if state[:debug]
       guiFont = asset_manager.loadFont("Interface/Fonts/Console.fnt")

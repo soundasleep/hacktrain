@@ -32,12 +32,14 @@ class Inputs::Build < Inputs::AbstractInput
                 if selected != hovered
                   build_line!(selected, hovered)
                   @selected = nil
+                  app.select(@selected)
                 end
               end
             else
               # select the current thing
               if currently_hovered_station
                 @selected = currently_hovered_station
+                app.select(@selected)
               end
             end
           end
@@ -58,5 +60,7 @@ class Inputs::Build < Inputs::AbstractInput
   def build_line!(from, to)
     app.build_line!(from, to)
     app.build_line!(to, from)
+
+    puts "Built line between #{from.name} <-> #{to.name}"
   end
 end
