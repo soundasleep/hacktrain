@@ -1,12 +1,7 @@
-class Inputs::Debug
+class Inputs::Debug < Inputs::AbstractInput
   include com.jme3.input.controls.ActionListener
 
-  attr_reader :app
   attr_reader :shift
-
-  def initialize(app)
-    @app = app
-  end
 
   def key_mappings
     {

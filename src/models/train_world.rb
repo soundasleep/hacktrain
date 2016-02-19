@@ -13,12 +13,12 @@ class TrainWorld
     @trains = []
 
     # add some random stations
-    RANDOM_STATIONS.times do
-      @stations << Station.new(x: rand(25) - 12, y: rand(15) - 7)
+    RANDOM_STATIONS.times do |i|
+      @stations << Station.new(id: i, x: rand(25) - 12, y: rand(15) - 7)
     end
 
     # add some random lines
-    RANDOM_LINES.times do
+    RANDOM_LINES.times do |i|
       a = @stations.sample
       b = (@stations - [a]).sample
       @lines << TrainLine.new(from: a, to: b)
@@ -26,9 +26,9 @@ class TrainWorld
     end
 
     # add some random trains
-    RANDOM_TRAINS.times do |n|
+    RANDOM_TRAINS.times do |i|
       line = @lines.sample
-      @trains << Train.new(x: line.from.x, y: line.from.y, line: line, from: line.from, to: line.to, name: "Train #{n + 1}")
+      @trains << Train.new(id: i, x: line.from.x, y: line.from.y, line: line, from: line.from, to: line.to, name: "Train #{i + 1}")
     end
   end
 end

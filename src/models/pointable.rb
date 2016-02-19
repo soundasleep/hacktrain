@@ -1,9 +1,10 @@
 class Pointable
   include Geometryable
 
-  attr_reader :x, :y, :z
+  attr_reader :id, :x, :y, :z
 
-  def initialize(x:, y:, z: 0)
+  def initialize(id:, x:, y:, z: 0)
+    @id = id
     @x = x
     @y = y
     @z = z

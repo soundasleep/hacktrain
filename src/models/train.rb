@@ -1,8 +1,8 @@
 class Train < Pointable
   attr_reader :line, :from, :to, :name
 
-  def initialize(x:, y:, z: 0, line:, from:, to:, name:)
-    super(x: x, y: y, z: z)
+  def initialize(id:, x:, y:, z: 0, line:, from:, to:, name:)
+    super(id: id, x: x, y: y, z: z)
     @line = line
     @from = from
     @to = to

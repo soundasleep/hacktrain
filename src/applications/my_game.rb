@@ -5,7 +5,8 @@ class MyGame < SimpleApplication
 
   def simpleInitApp
     @state = {
-      debug: false
+      build: false,
+      debug: false,
     }
 
     # timer = NanoTimer.new #required for patch
@@ -64,10 +65,12 @@ class MyGame < SimpleApplication
 
   def init_keys
     @keys_registered = []
+    @mouse_registered = []
 
     [
       Inputs::Camera,
       Inputs::Debug,
+      Inputs::Build,
     ].each do |input_class|
       input = input_class.new(self)
 
@@ -78,6 +81,15 @@ class MyGame < SimpleApplication
         input_manager.add_listener input, title
 
         @keys_registered << "#{key}\t#{title}"
+      end
+
+      input.mouse_mappings.each do |title, key|
+        trigger = MouseButtonTrigger.new(MouseInput.send("BUTTON_#{key}"))
+
+        input_manager.add_mapping title, trigger
+        input_manager.add_listener input, title
+
+        @mouse_registered << "#{key}\t#{title}"
       end
     end
   end
@@ -109,11 +121,7 @@ class MyGame < SimpleApplication
     @train_root.detach_all_children
 
     @world.stations.each do |object|
-      geo = object.as_geometry(asset_manager, state)
-      node = Node.new
-      node.attach_child geo
-      node.set_local_translation object.point
-      @train_root.attach_child node
+      @train_root.attach_child wrap_node(object)
     end
 
     @world.lines.each do |object|
@@ -127,16 +135,58 @@ class MyGame < SimpleApplication
     train_pivot.detach_all_children
 
     @world.trains.each do |object|
-      geo = object.as_geometry(asset_manager, state)
-      node = Node.new
-      node.attach_child geo
-      node.set_local_translation object.point
-      train_pivot.attach_child node
+      train_pivot.attach_child wrap_node(object)
     end
+  end
+
+  def wrap_node(object)
+    geo = object.as_geometry(asset_manager, state)
+
+    geo.set_user_data "type", object.class.name
+    geo.set_user_data "id", object.id
+
+    node = Node.new
+    node.attach_child geo
+    node.set_local_translation object.point
+
+    node
   end
 
   def display_help!
     puts "Keys available:"
     puts @keys_registered
+
+    puts "Mouse available:"
+    puts @mouse_registered
+  end
+
+  def collide_with_pointer
+    results = CollisionResults.new
+    click2d = input_manager.get_cursor_position
+    click3d = cam.get_world_coordinates(click2d, 0).clone
+    direction = cam.get_world_coordinates(click2d, 1).subtract_local(click3d).normalize_local
+
+    ray = Ray.new(click3d, direction)
+    root_node.collide_with(ray, results)
+
+    results.map do |r|
+      type = r.geometry.parent.get_user_data("type")
+      id = r.geometry.parent.get_user_data("id")
+
+      case type
+        when Station.name
+          @world.stations
+        when Train.name
+          @world.trains
+        else
+          []
+      end.select { |s| s.id == id }.first
+    end.compact
+  end
+
+  def build_line!(from, to)
+    @world.lines << TrainLine.new(from: from, to: to)
+
+    @state[:redraw] = true
   end
 end
