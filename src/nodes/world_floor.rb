@@ -3,7 +3,7 @@ class Node::WorldFloor < Node::RenderedNode
     box = Box.new(Vector3f::ZERO, 30, 30, 0.01)
 
     geo = Geometry.new("Box", box)
-    geo.material = textured_material("Textures/Terrain/Pond/Pond.jpg", "Textures/Terrain/Pond/Pond_normal.png", asset_manager)
+    geo.material = textured_material("img/terrain.jpg", nil, asset_manager)
     geo.local_translation = Vector3f.new(0, 0, -0.02)
     geo
   end

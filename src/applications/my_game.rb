@@ -32,6 +32,8 @@ class MyGame < SimpleApplication
     init_keys
 
     redraw_all
+
+    redraw_terrain
   end
 
   attr_reader :keys_registered
@@ -95,8 +97,6 @@ class MyGame < SimpleApplication
   def redraw_all
     @train_root.detach_all_children
 
-    @train_root.attach_child WorldFloor.new.as_geometry(asset_manager, state)
-
     @world.stations.each do |object|
       @train_root.attach_child wrap_node(object)
     end
@@ -118,6 +118,10 @@ class MyGame < SimpleApplication
     @world.trains.each do |object|
       train_pivot.attach_child wrap_node(object)
     end
+  end
+
+  def redraw_terrain
+    root_node.attach_child WorldFloor.new.as_geometry(asset_manager, state)
   end
 
   def debug_node
