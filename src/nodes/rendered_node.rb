@@ -35,6 +35,7 @@ class Node::RenderedNode
       text.text = "#{name}"
       text.set_local_translation (-text.getLineWidth() / 2), text.getLineHeight() / 2, 0.35
       text.queue_bucket = RenderQueue::Bucket::Transparent
+      text.shadow_mode = RenderQueue::ShadowMode::Off
 
       node.attach_child text
     end
