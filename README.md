@@ -1,6 +1,8 @@
 hacktrain
 =========
 
+![Screenshot](https://raw.githubusercontent.com/soundasleep/hacktrain/master/screenshot.png)
+
 Based heavily on [https://github.com/jwoertink/jmonkeyengine-ruby](jmonkeyengine-ruby).
 
 Requires JRuby installed, since we are using JME3 for doing the actual hard rendering work...
