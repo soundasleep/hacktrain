@@ -1,13 +1,15 @@
 hacktrain
 =========
 
+The start of a train game, written in Ruby but using JMonkeyEngine 3 as a 3D game engine.
+
 ![Screenshot](https://raw.githubusercontent.com/soundasleep/hacktrain/master/screenshot.png)
 
 Based heavily on [https://github.com/jwoertink/jmonkeyengine-ruby](jmonkeyengine-ruby).
 
-Requires JRuby installed, since we are using JME3 for doing the actual hard rendering work...
-
 # Setting up
+
+You need to run this with JRuby, because we're using JME3.
 
 ```
 brew install Caskroom/cask/java
