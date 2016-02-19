@@ -3,6 +3,8 @@ class MyGame < SimpleApplication
 
   attr_reader :state
 
+  SHADOWMAP_SIZE = 1024 * 2
+
   def simpleInitApp
     @state = {
       build: false,
@@ -18,6 +20,20 @@ class MyGame < SimpleApplication
     sun.color = ColorRGBA::White
     sun.direction = Vector3f.new(-0.5, -0.5, -0.5).normalize_local
     root_node.add_light sun
+
+    # add shadows
+    shadow_renderer = DirectionalLightShadowRenderer.new(asset_manager, SHADOWMAP_SIZE, 3)
+    shadow_renderer.light = sun
+    view_port.add_processor shadow_renderer
+
+    shadow_filter = DirectionalLightShadowFilter.new(asset_manager, SHADOWMAP_SIZE, 3)
+    shadow_filter.light = sun
+    shadow_filter.enabled = true
+
+    fpp = FilterPostProcessor.new(asset_manager)
+    fpp.add_filter shadow_filter
+    fpp.num_samples = 4
+    view_port.add_processor fpp
 
     ambient = AmbientLight.new
     ambient.color = ColorRGBA::White.mult(0.2)
@@ -148,6 +164,9 @@ class MyGame < SimpleApplication
     pivot.attach_child(red)
     pivot.attach_child(thing)
     pivot.rotate(0.4, 0.4, 0.0)
+
+    pivot.shadow_mode = RenderQueue::ShadowMode::CastAndReceive
+
     @pivot = pivot
     pivot
   end

@@ -29,3 +29,8 @@ java_import "com.jme3.font.BitmapText"
 java_import "com.jme3.renderer.queue.RenderQueue"
 
 java_import "com.jme3.collision.CollisionResults"
+
+java_import "com.jme3.shadow.DirectionalLightShadowRenderer"
+java_import "com.jme3.shadow.DirectionalLightShadowFilter"
+
+java_import "com.jme3.post.FilterPostProcessor"

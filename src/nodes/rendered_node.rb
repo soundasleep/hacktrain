@@ -17,6 +17,13 @@ class Node::RenderedNode
       geo.material = coloured_material(ColorRGBA::Yellow, asset_manager)
     end
 
+    # set shadows
+    if casts_shadows?
+      node.shadow_mode = RenderQueue::ShadowMode::CastAndReceive
+    else
+      node.shadow_mode = RenderQueue::ShadowMode::Receive
+    end
+
     node.attach_child geo
 
     if state[:debug]
@@ -35,11 +42,16 @@ class Node::RenderedNode
     node
   end
 
+  # default geometry
   def root_geometry
     box = Box.new(Vector3f::ZERO, 0.3, 0.3, 0.3)
 
     geo = Geometry.new("Box", box)
     geo.material = coloured_material(ColorRGBA::Red, asset_manager)
     geo
+  end
+
+  def casts_shadows?
+    true
   end
 end

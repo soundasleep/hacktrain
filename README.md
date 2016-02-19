@@ -1,6 +1,10 @@
 hacktrain
 =========
 
+Based heavily on [https://github.com/jwoertink/jmonkeyengine-ruby](jmonkeyengine-ruby).
+
+Requires JRuby installed, since we are using JME3 for doing the actual hard rendering work...
+
 # Setting up
 
 ```

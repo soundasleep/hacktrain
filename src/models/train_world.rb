@@ -5,7 +5,7 @@ class TrainWorld
 
   RANDOM_STATIONS = 15
   RANDOM_TRAINS = 4
-  RANDOM_LINES = (RANDOM_STATIONS * 1.1).to_i
+  RANDOM_LINES = (RANDOM_STATIONS * 0.1).to_i
 
   def initialize
     @stations = []
@@ -14,7 +14,7 @@ class TrainWorld
 
     # add some random stations
     RANDOM_STATIONS.times do |i|
-      @stations << Station.new(id: i, x: rand(25) - 12, y: rand(15) - 7)
+      @stations << Station.new(id: i, x: rand(25.0) - 12, y: rand(15.0) - 7)
     end
 
     # add some random lines
