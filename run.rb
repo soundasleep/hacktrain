@@ -24,3 +24,14 @@ def coloured_material(color, asset_manager)
   material.set_color "Diffuse", color
   material
 end
+
+def textured_material(diffuse_map, normal_map, asset_manager)
+  material = coloured_material(ColorRGBA::White, asset_manager)
+
+  # TODO might want to cache the load_textures
+  material.set_texture "DiffuseMap", asset_manager.load_texture(diffuse_map)
+  material.set_texture "NormalMap", asset_manager.load_texture(normal_map)
+  material.set_float "Shininess", 64    # [0..128]
+
+  material
+end

@@ -9,34 +9,6 @@ class MyGame < SimpleApplication
       debug: false,
     }
 
-    # timer = NanoTimer.new #required for patch
-
-    box1 = Box.new(Vector3f.new(1,-1,1), 0.1, 0.1, 0.1)
-    blue = Geometry.new("Box", box1)
-    material1 = Material.new(asset_manager, File.join('Common', 'MatDefs', 'Misc', 'Unshaded.j3md'))
-    material1.set_color("Color", ColorRGBA::Blue)
-    blue.material = material1
-    @box1 = box1
-
-    box2 = Box.new(Vector3f.new(1,3,1), 0.1, 0.1, 0.1)
-    red = Geometry.new("Box", box2)
-    material2 = Material.new(asset_manager, File.join('Common', 'MatDefs', 'Misc', 'Unshaded.j3md'))
-    material2.set_color("Color", ColorRGBA::Red)
-    red.material = material2
-
-    mesh = Box.new(Vector3f::ZERO, 0.1, 0.1, 0.1)
-    thing = Geometry.new("thing", mesh)
-    mat = Material.new(asset_manager, File.join('Common', 'MatDefs', 'Misc', 'ShowNormals.j3md'))
-    thing.material = mat
-    root_node.attach_child(thing)
-
-    pivot = Node.new("pivot")
-    root_node.attach_child(pivot)
-    pivot.attach_child(blue)
-    pivot.attach_child(red)
-    pivot.rotate(0.4, 0.4, 0.0)
-    @pivot = pivot
-
     getViewPort().background_color = ColorRGBA.new(0.1, 0.1, 0.1, 1)
 
     @train_root = Node.new("train root")
@@ -53,7 +25,8 @@ class MyGame < SimpleApplication
 
     @world = TrainWorld.new
 
-    cam.location = Vector3f.new(0, 0, 20)
+    cam.location = Vector3f.new(0, -10, 20)
+    cam.look_at Vector3f.new(0, 0, 0), Vector3f::UNIT_Y
     flyCam.enabled = false
 
     init_keys
@@ -95,7 +68,9 @@ class MyGame < SimpleApplication
   end
 
   def simpleUpdate(tpf)
-    @pivot.rotate(0, 2 * tpf, 0)
+    if state[:debug] && @pivot
+      @pivot.rotate(0, 2 * tpf, 0)
+    end
 
     @world.trains.each do |object|
       object.simpleUpdate @world, tpf
@@ -120,12 +95,18 @@ class MyGame < SimpleApplication
   def redraw_all
     @train_root.detach_all_children
 
+    @train_root.attach_child WorldFloor.new.as_geometry(asset_manager, state)
+
     @world.stations.each do |object|
       @train_root.attach_child wrap_node(object)
     end
 
     @world.lines.each do |object|
       @train_root.attach_child object.as_geometry(asset_manager, state)
+    end
+
+    if state[:debug]
+      @train_root.attach_child debug_node
     end
 
     redraw_trains
@@ -137,6 +118,34 @@ class MyGame < SimpleApplication
     @world.trains.each do |object|
       train_pivot.attach_child wrap_node(object)
     end
+  end
+
+  def debug_node
+    box1 = Box.new(Vector3f.new(1,-1,1), 0.1, 0.1, 0.1)
+    blue = Geometry.new("Box", box1)
+    material1 = Material.new(asset_manager, File.join('Common', 'MatDefs', 'Misc', 'Unshaded.j3md'))
+    material1.set_color("Color", ColorRGBA::Blue)
+    blue.material = material1
+    @box1 = box1
+
+    box2 = Box.new(Vector3f.new(1,3,1), 0.1, 0.1, 0.1)
+    red = Geometry.new("Box", box2)
+    material2 = Material.new(asset_manager, File.join('Common', 'MatDefs', 'Misc', 'Unshaded.j3md'))
+    material2.set_color("Color", ColorRGBA::Red)
+    red.material = material2
+
+    mesh = Box.new(Vector3f::ZERO, 0.1, 0.1, 0.1)
+    thing = Geometry.new("thing", mesh)
+    mat = Material.new(asset_manager, File.join('Common', 'MatDefs', 'Misc', 'ShowNormals.j3md'))
+    thing.material = mat
+
+    pivot = Node.new("pivot")
+    pivot.attach_child(blue)
+    pivot.attach_child(red)
+    pivot.attach_child(thing)
+    pivot.rotate(0.4, 0.4, 0.0)
+    @pivot = pivot
+    pivot
   end
 
   def wrap_node(object)
