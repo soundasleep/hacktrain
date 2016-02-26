@@ -13,7 +13,7 @@ You need to run this with JRuby, because we're using JME3.
 
 ### Mac OS X
 
-```
+```sh
 brew install Caskroom/cask/java
 java -version
 
@@ -39,7 +39,7 @@ ruby run.rb
 
 There is no `rbenv` on Windows; download [JRuby 9.0+](http://jruby.org/download), install it to `C:\jruby`, and then continue as before:
 
-```
+```sh
 # if `bundle` throws an `OutOfMemoryError: Java heap space`
 set JRUBY_OPTS=-J-Xmx1024m
 
