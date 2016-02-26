@@ -11,6 +11,8 @@ Based heavily on [https://github.com/jwoertink/jmonkeyengine-ruby](jmonkeyengine
 
 You need to run this with JRuby, because we're using JME3.
 
+### Mac OS X
+
 ```
 brew install Caskroom/cask/java
 java -version
@@ -31,4 +33,20 @@ bundle
 
 # we can finally run things
 ruby run.rb
+```
+
+### Windows
+
+There is no `rbenv` on Windows; download [JRuby 9.0+](http://jruby.org/download), install it to `C:\jruby`, and then continue as before:
+
+```
+# if `bundle` throws an `OutOfMemoryError: Java heap space`
+set JRUBY_OPTS=-J-Xmx1024m
+
+c:\jruby\bin\jruby -v    # should say "jruby 9.0.5.0"
+c:\jruby\bin\gem install bundler
+c:\jruby\bin\bundle
+
+# we can finally run things
+c:\jruby\bin\jruby run.rb
 ```
